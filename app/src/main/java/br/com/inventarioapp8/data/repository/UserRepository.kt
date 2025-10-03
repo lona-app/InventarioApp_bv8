@@ -13,4 +13,17 @@ class UserRepository(private val userDao: UserDao) {
         }
         return userDao.getUserByUsername(identifier)
     }
+
+    // 👇 FUNÇÕES NOVAS ADICIONADAS 👇
+    suspend fun getUserByUsername(username: String): User? {
+        return userDao.getUserByUsername(username)
+    }
+
+    suspend fun getLastUserId(): Long? {
+        return userDao.getLastUserId()
+    }
+
+    suspend fun insertUser(user: User) {
+        userDao.insert(user)
+    }
 }

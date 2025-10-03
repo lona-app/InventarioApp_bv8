@@ -19,4 +19,8 @@ interface UserDao {
 
     @Query("SELECT COUNT(*) FROM users")
     suspend fun count(): Int
+
+    // 👇 QUERY NOVA ADICIONADA 👇
+    @Query("SELECT MAX(id) FROM users")
+    suspend fun getLastUserId(): Long?
 }

@@ -1,0 +1,74 @@
+package br.com.inventarioapp8.ui.auth
+
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import br.com.inventarioapp8.data.local.AppDatabase
+import br.com.inventarioapp8.data.local.entity.Profile
+import br.com.inventarioapp8.data.local.entity.User
+import br.com.inventarioapp8.data.repository.UserRepository
+import kotlinx.coroutines.launch
+import java.util.Date
+
+// Enum para os resultados do cadastro
+enum class RegistrationResult {
+    SUCCESS,
+    EMPTY_FIELDS,
+    USERNAME_ALREADY_EXISTS,
+    ERROR
+}
+
+class RegistrationViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val repository: UserRepository
+
+    private val _registrationResult = MutableLiveData<RegistrationResult>()
+    val registrationResult: LiveData<RegistrationResult> = _registrationResult
+
+    init {
+        val userDao = AppDatabase.getDatabase(application).userDao()
+        repository = UserRepository(userDao)
+    }
+
+    fun registerUser(name: String, username: String, profile: Profile) {
+        // 1. Validação de campos vazios
+        if (name.isBlank() || username.isBlank()) {
+            _registrationResult.value = RegistrationResult.EMPTY_FIELDS
+            return
+        }
+
+        viewModelScope.launch {
+            try {
+                // 2. Verifica se o username já existe
+                if (repository.getUserByUsername(username) != null) {
+                    _registrationResult.postValue(RegistrationResult.USERNAME_ALREADY_EXISTS)
+                    return@launch
+                }
+
+                // 3. Calcula o próximo ID
+                val lastId = repository.getLastUserId() ?: 1000 // Se o banco estiver vazio, começa do 1000
+                val newId = if (lastId < 1001) 1001 else lastId + 1
+
+                val newUser = User(
+                    id = newId,
+                    name = name,
+                    username = username.lowercase(), // Garante que o username seja salvo em minúsculo
+                    passwordHash = "user123", // Senha padrão
+                    profile = profile,
+                    isActive = true,
+                    creationDate = Date(),
+                    inactivationDate = null
+                )
+
+                // 4. Salva no banco de dados
+                repository.insertUser(newUser)
+                _registrationResult.postValue(RegistrationResult.SUCCESS)
+
+            } catch (e: Exception) {
+                _registrationResult.postValue(RegistrationResult.ERROR)
+            }
+        }
+    }
+}
