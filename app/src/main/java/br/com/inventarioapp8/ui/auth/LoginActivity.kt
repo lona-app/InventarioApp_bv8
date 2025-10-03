@@ -24,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.buttonLogin.setOnClickListener {
-            val identifier = binding.editTextIdentifier.text.toString()
+            val identifier = binding.editTextIdentifier.text.toString().trim()
             val password = binding.editTextPassword.text.toString()
             viewModel.login(identifier, password)
         }
@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.loginResult.observe(this) { result ->
+            // O 'when' só executa se o resultado não for nulo
             when (result) {
                 LoginResult.SUCCESS -> {
                     val intent = Intent(this, DashboardActivity::class.java)
@@ -41,7 +42,17 @@ class LoginActivity : AppCompatActivity() {
                 LoginResult.INVALID_CREDENTIALS -> {
                     Toast.makeText(this, "ID/Usuário ou senha inválidos.", Toast.LENGTH_LONG).show()
                 }
-                null -> {}
+                LoginResult.ERROR -> {
+                    Toast.makeText(this, "Ocorreu um erro. Tente novamente.", Toast.LENGTH_LONG).show()
+                }
+                null -> {
+                    // Não faz nada quando o valor é nulo
+                }
+            }
+            // 👇 MUDANÇA: Limpa o evento DEPOIS de ter sido tratado
+            // Isso previne que o erro seja mostrado novamente numa segunda tentativa
+            if(result != LoginResult.SUCCESS) {
+                viewModel.onLoginResultHandled()
             }
         }
     }
