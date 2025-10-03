@@ -6,6 +6,7 @@ import br.com.inventarioapp8.data.local.entity.User
 class UserRepository(private val userDao: UserDao) {
 
     suspend fun findUserForLogin(identifier: String): User? {
+        // ... (código existente)
         val id = identifier.toLongOrNull()
         if (id != null) {
             val userById = userDao.getUserById(id)
@@ -14,7 +15,6 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getUserByUsername(identifier)
     }
 
-    // 👇 FUNÇÕES NOVAS ADICIONADAS 👇
     suspend fun getUserByUsername(username: String): User? {
         return userDao.getUserByUsername(username)
     }
@@ -25,5 +25,14 @@ class UserRepository(private val userDao: UserDao) {
 
     suspend fun insertUser(user: User) {
         userDao.insert(user)
+    }
+
+    // 👇 FUNÇÃO NOVA ADICIONADA 👇
+    suspend fun getUserById(id: Long): User? {
+        return userDao.getUserById(id)
+    }
+
+    suspend fun updateUser(user: User) {
+        userDao.update(user)
     }
 }

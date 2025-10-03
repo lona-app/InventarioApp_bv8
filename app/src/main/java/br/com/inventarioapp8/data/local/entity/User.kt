@@ -10,7 +10,7 @@ data class User(
     var id: Long,
     val name: String,
     val username: String,
-    val passwordHash: String,
+    var passwordHash: String,
     val profile: Profile,
     val isActive: Boolean,
     val creationDate: Date,
