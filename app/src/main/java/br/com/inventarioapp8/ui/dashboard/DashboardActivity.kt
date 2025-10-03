@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import br.com.inventarioapp8.databinding.ActivityDashboardBinding
 import br.com.inventarioapp8.ui.auth.LoginActivity
+import br.com.inventarioapp8.ui.users.UserListActivity // IMPORT NOVO
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -15,10 +16,7 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        // Esconde a ActionBar (a barra de título no topo) para um visual mais limpo
         supportActionBar?.hide()
-
         setupListeners()
     }
 
@@ -27,15 +25,14 @@ class DashboardActivity : AppCompatActivity() {
             showToast("Módulo de Inventários em breve!")
         }
 
+        // 👇 MUDANÇA AQUI 👇
         binding.buttonUsers.setOnClickListener {
-            showToast("Módulo de Usuários em breve!")
+            // Agora abre a tela de lista de usuários
+            startActivity(Intent(this, UserListActivity::class.java))
         }
 
         binding.buttonLogout.setOnClickListener {
-            // Cria a intenção de voltar para a tela de login
             val intent = Intent(this, LoginActivity::class.java).apply {
-                // Essas flags limpam o histórico de telas, para que o usuário
-                // não possa voltar para o dashboard pressionando o botão "voltar" do celular
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             startActivity(intent)

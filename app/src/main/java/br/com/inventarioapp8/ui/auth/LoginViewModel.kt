@@ -19,7 +19,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: UserRepository
 
-    // 👇 MUDANÇA 1: Adicionar '?' para permitir valor nulo
     private val _loginResult = MutableLiveData<LoginResult?>()
     val loginResult: LiveData<LoginResult?> = _loginResult
 
@@ -29,12 +28,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun login(identifier: String, password: String) {
-        // Evita múltiplos cliques enquanto já está carregando (será útil no futuro)
-        if (_loginResult.value != null) {
-            // Se já houver um resultado, limpa antes de tentar de novo
-            onLoginResultHandled()
-        }
-
         viewModelScope.launch {
             try {
                 val user = repository.findUserForLogin(identifier)
@@ -49,7 +42,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    // 👇 MUDANÇA 2: Adicionar a função de limpeza
     fun onLoginResultHandled() {
         _loginResult.value = null
     }

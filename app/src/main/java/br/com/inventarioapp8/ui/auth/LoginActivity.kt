@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import br.com.inventarioapp8.databinding.ActivityLoginBinding
 import br.com.inventarioapp8.ui.dashboard.DashboardActivity
+import br.com.inventarioapp8.ui.auth.RegistrationActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -28,11 +29,15 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.editTextPassword.text.toString()
             viewModel.login(identifier, password)
         }
+
+        binding.textViewRegister.setOnClickListener {
+            val intent = Intent(this, RegistrationActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun setupObservers() {
         viewModel.loginResult.observe(this) { result ->
-            // O 'when' só executa se o resultado não for nulo
             when (result) {
                 LoginResult.SUCCESS -> {
                     val intent = Intent(this, DashboardActivity::class.java)
@@ -45,13 +50,9 @@ class LoginActivity : AppCompatActivity() {
                 LoginResult.ERROR -> {
                     Toast.makeText(this, "Ocorreu um erro. Tente novamente.", Toast.LENGTH_LONG).show()
                 }
-                null -> {
-                    // Não faz nada quando o valor é nulo
-                }
+                null -> {}
             }
-            // 👇 MUDANÇA: Limpa o evento DEPOIS de ter sido tratado
-            // Isso previne que o erro seja mostrado novamente numa segunda tentativa
-            if(result != LoginResult.SUCCESS) {
+            if (result != LoginResult.SUCCESS) {
                 viewModel.onLoginResultHandled()
             }
         }
