@@ -26,9 +26,22 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     private val _registrationResult = MutableLiveData<RegistrationResult>()
     val registrationResult: LiveData<RegistrationResult> = _registrationResult
 
+    // 👇 LIVEDATA NOVO PARA O PRÓXIMO ID 👇
+    private val _nextUserId = MutableLiveData<Long>()
+    val nextUserId: LiveData<Long> = _nextUserId
+
     init {
         val userDao = AppDatabase.getDatabase(application).userDao()
         repository = UserRepository(userDao)
+        loadNextUserId() // Carrega o ID assim que o ViewModel é criado
+    }
+
+    private fun loadNextUserId() {
+        viewModelScope.launch {
+            val lastId = repository.getLastUserId() ?: 1000
+            val newId = if (lastId < 1001) 1001 else lastId + 1
+            _nextUserId.postValue(newId)
+        }
     }
 
     fun registerUser(name: String, username: String, profile: Profile) {
@@ -44,14 +57,14 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                     return@launch
                 }
 
-                val lastId = repository.getLastUserId() ?: 1000
-                val newId = if (lastId < 1001) 1001 else lastId + 1
+                // Usamos o ID que já foi calculado e está no LiveData
+                val newId = _nextUserId.value ?: return@launch
 
                 val newUser = User(
                     id = newId,
                     name = name,
                     username = username.lowercase(),
-                    passwordHash = "user123", // SENHA PADRÃO AUTOMÁTICA
+                    passwordHash = "user123",
                     profile = profile,
                     isActive = true,
                     creationDate = Date(),

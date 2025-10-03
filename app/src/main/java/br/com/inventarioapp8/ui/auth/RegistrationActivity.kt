@@ -22,15 +22,13 @@ class RegistrationActivity : AppCompatActivity() {
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Ativa a seta "voltar" na ActionBar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "" // Opcional: remove o título da ActionBar
+        supportActionBar?.title = ""
 
         setupListeners()
         setupObservers()
     }
 
-    // Captura o clique na seta "voltar"
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             finish()
@@ -59,6 +57,13 @@ class RegistrationActivity : AppCompatActivity() {
 
             viewModel.registerUser(name, username, selectedProfile)
         }
+
+        // 👇 AÇÃO PARA O NOVO BOTÃO 👇
+        binding.buttonResetPassword.setOnClickListener {
+            // Como esta é a tela de CADASTRO, o reset ainda não se aplica.
+            // Mostramos uma mensagem informativa.
+            Toast.makeText(this, "A senha será 'user123'. O reset se aplica na tela de edição.", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun setupObservers() {
@@ -77,6 +82,11 @@ class RegistrationActivity : AppCompatActivity() {
             if (message.isNotEmpty()) {
                 Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             }
+        }
+
+        viewModel.nextUserId.observe(this) { nextId ->
+            // 👇 TEXTO DO ID ALTERADO AQUI 👇
+            binding.textViewNewUserId.text = "ID: $nextId"
         }
     }
 }
