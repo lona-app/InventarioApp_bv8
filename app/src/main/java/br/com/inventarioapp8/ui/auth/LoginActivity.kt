@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
         setupObservers()
     }
 
-    // 👇 NOVA FUNÇÃO PARA ESCONDER O TECLADO 👇
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (currentFocus != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -40,15 +39,14 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.editTextPassword.text.toString()
             viewModel.login(identifier, password)
         }
-
-        binding.textViewRegister.setOnClickListener {
-            val intent = Intent(this, RegistrationActivity::class.java)
-            startActivity(intent)
-        }
     }
 
     private fun setupObservers() {
         viewModel.loginResult.observe(this) { result ->
+            if (result == null) {
+                return@observe
+            }
+
             when (result) {
                 LoginResult.SUCCESS -> {
                     val intent = Intent(this, DashboardActivity::class.java)
@@ -61,11 +59,9 @@ class LoginActivity : AppCompatActivity() {
                 LoginResult.ERROR -> {
                     Toast.makeText(this, "Ocorreu um erro. Tente novamente.", Toast.LENGTH_LONG).show()
                 }
-                null -> {}
             }
-            if(result != LoginResult.SUCCESS) {
-                viewModel.onLoginResultHandled()
-            }
+
+            viewModel.onLoginResultHandled()
         }
     }
 }

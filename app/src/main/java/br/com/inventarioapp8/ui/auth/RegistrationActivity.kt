@@ -2,6 +2,7 @@ package br.com.inventarioapp8.ui.auth
 
 import android.content.Context
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -21,8 +22,21 @@ class RegistrationActivity : AppCompatActivity() {
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Ativa a seta "voltar" na ActionBar
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "" // Opcional: remove o título da ActionBar
+
         setupListeners()
         setupObservers()
+    }
+
+    // Captura o clique na seta "voltar"
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
