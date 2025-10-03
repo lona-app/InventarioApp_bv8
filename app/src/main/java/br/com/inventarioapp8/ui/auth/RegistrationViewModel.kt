@@ -12,7 +12,6 @@ import br.com.inventarioapp8.data.repository.UserRepository
 import kotlinx.coroutines.launch
 import java.util.Date
 
-// Enum para os resultados do cadastro
 enum class RegistrationResult {
     SUCCESS,
     EMPTY_FIELDS,
@@ -33,7 +32,6 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun registerUser(name: String, username: String, profile: Profile) {
-        // 1. Validação de campos vazios
         if (name.isBlank() || username.isBlank()) {
             _registrationResult.value = RegistrationResult.EMPTY_FIELDS
             return
@@ -41,28 +39,25 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
         viewModelScope.launch {
             try {
-                // 2. Verifica se o username já existe
                 if (repository.getUserByUsername(username) != null) {
                     _registrationResult.postValue(RegistrationResult.USERNAME_ALREADY_EXISTS)
                     return@launch
                 }
 
-                // 3. Calcula o próximo ID
-                val lastId = repository.getLastUserId() ?: 1000 // Se o banco estiver vazio, começa do 1000
+                val lastId = repository.getLastUserId() ?: 1000
                 val newId = if (lastId < 1001) 1001 else lastId + 1
 
                 val newUser = User(
                     id = newId,
                     name = name,
-                    username = username.lowercase(), // Garante que o username seja salvo em minúsculo
-                    passwordHash = "user123", // Senha padrão
+                    username = username.lowercase(),
+                    passwordHash = "user123", // SENHA PADRÃO AUTOMÁTICA
                     profile = profile,
                     isActive = true,
                     creationDate = Date(),
                     inactivationDate = null
                 )
 
-                // 4. Salva no banco de dados
                 repository.insertUser(newUser)
                 _registrationResult.postValue(RegistrationResult.SUCCESS)
 

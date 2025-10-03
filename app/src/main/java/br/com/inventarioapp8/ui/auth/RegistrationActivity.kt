@@ -25,7 +25,6 @@ class RegistrationActivity : AppCompatActivity() {
         setupObservers()
     }
 
-    // 👇 NOVA FUNÇÃO PARA ESCONDER O TECLADO 👇
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (currentFocus != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -50,21 +49,19 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun setupObservers() {
         viewModel.registrationResult.observe(this) { result ->
-            when (result) {
+            val message = when (result) {
                 RegistrationResult.SUCCESS -> {
-                    Toast.makeText(this, "Usuário cadastrado com sucesso!", Toast.LENGTH_LONG).show()
                     finish()
+                    "Usuário cadastrado com sucesso!"
                 }
-                RegistrationResult.EMPTY_FIELDS -> {
-                    Toast.makeText(this, "Nome e Usuário são obrigatórios.", Toast.LENGTH_LONG).show()
-                }
-                RegistrationResult.USERNAME_ALREADY_EXISTS -> {
-                    Toast.makeText(this, "Este nome de usuário já está em uso.", Toast.LENGTH_LONG).show()
-                }
-                RegistrationResult.ERROR -> {
-                    Toast.makeText(this, "Ocorreu um erro inesperado.", Toast.LENGTH_LONG).show()
-                }
-                null -> {}
+                RegistrationResult.EMPTY_FIELDS -> "Nome e Usuário são obrigatórios."
+                RegistrationResult.USERNAME_ALREADY_EXISTS -> "Este nome de usuário já está em uso."
+                RegistrationResult.ERROR -> "Ocorreu um erro inesperado."
+                null -> ""
+            }
+
+            if (message.isNotEmpty()) {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
             }
         }
     }
