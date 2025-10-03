@@ -25,6 +25,8 @@ class LoginActivity : AppCompatActivity() {
         setupObservers()
     }
 
+    // ... (dispatchTouchEvent e setupListeners continuam iguais)
+
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         if (currentFocus != null) {
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -42,16 +44,23 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupObservers() {
-        viewModel.loginResult.observe(this) { result ->
-            if (result == null) {
+        // Agora observamos o 'loginState' que contém o resultado e o usuário
+        viewModel.loginState.observe(this) { state ->
+            if (state == null) {
                 return@observe
             }
 
-            when (result) {
+            when (state.result) {
                 LoginResult.SUCCESS -> {
                     val intent = Intent(this, DashboardActivity::class.java)
                     startActivity(intent)
                     finish()
+                }
+                LoginResult.FORCE_PASSWORD_CHANGE -> {
+                    // Redireciona para a tela de troca de senha, passando o ID do usuário
+                    val intent = Intent(this, ChangePasswordActivity::class.java)
+                    intent.putExtra("USER_ID", state.user?.id)
+                    startActivity(intent)
                 }
                 LoginResult.INVALID_CREDENTIALS -> {
                     Toast.makeText(this, "ID/Usuário ou senha inválidos.", Toast.LENGTH_LONG).show()

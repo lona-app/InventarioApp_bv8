@@ -21,11 +21,19 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.auth.RegistrationActivity" />
+        <activity
+            android:name=".ui.auth.RegistrationActivity"
+            android:parentActivityName=".ui.users.UserListActivity" />
+
+        <activity android:name=".ui.auth.ChangePasswordActivity" />
+
         <activity android:name=".ui.dashboard.DashboardActivity" />
+
         <activity android:name=".MainActivity" />
 
-        <activity android:name=".ui.users.UserListActivity" />
+        <activity
+            android:name=".ui.users.UserListActivity"
+            android:parentActivityName=".ui.dashboard.DashboardActivity" />
 
     </application>
 </manifest>
