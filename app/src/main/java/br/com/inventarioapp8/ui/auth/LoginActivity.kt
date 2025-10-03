@@ -1,13 +1,15 @@
 package br.com.inventarioapp8.ui.auth
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import br.com.inventarioapp8.databinding.ActivityLoginBinding
 import br.com.inventarioapp8.ui.dashboard.DashboardActivity
-import br.com.inventarioapp8.ui.auth.RegistrationActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -21,6 +23,15 @@ class LoginActivity : AppCompatActivity() {
 
         setupListeners()
         setupObservers()
+    }
+
+    // 👇 NOVA FUNÇÃO PARA ESCONDER O TECLADO 👇
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun setupListeners() {
@@ -52,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
                 }
                 null -> {}
             }
-            if (result != LoginResult.SUCCESS) {
+            if(result != LoginResult.SUCCESS) {
                 viewModel.onLoginResultHandled()
             }
         }

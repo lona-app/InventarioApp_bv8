@@ -1,6 +1,9 @@
 package br.com.inventarioapp8.ui.auth
 
+import android.content.Context
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +25,15 @@ class RegistrationActivity : AppCompatActivity() {
         setupObservers()
     }
 
+    // 👇 NOVA FUNÇÃO PARA ESCONDER O TECLADO 👇
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        if (currentFocus != null) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun setupListeners() {
         binding.buttonSave.setOnClickListener {
             val name = binding.editTextName.text.toString()
@@ -41,7 +53,7 @@ class RegistrationActivity : AppCompatActivity() {
             when (result) {
                 RegistrationResult.SUCCESS -> {
                     Toast.makeText(this, "Usuário cadastrado com sucesso!", Toast.LENGTH_LONG).show()
-                    finish() // Fecha a tela de cadastro e volta para o login
+                    finish()
                 }
                 RegistrationResult.EMPTY_FIELDS -> {
                     Toast.makeText(this, "Nome e Usuário são obrigatórios.", Toast.LENGTH_LONG).show()
