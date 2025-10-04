@@ -1,12 +1,16 @@
 package br.com.inventarioapp8.data.repository
 
+import androidx.lifecycle.LiveData
 import br.com.inventarioapp8.data.local.dao.UserDao
 import br.com.inventarioapp8.data.local.entity.User
 
 class UserRepository(private val userDao: UserDao) {
 
+    // 👇 FUNÇÃO NOVA ADICIONADA 👇
+    val allUsers: LiveData<List<User>> = userDao.getAllUsers()
+
+    // ... (outras funções: findUserForLogin, insertUser, etc.)
     suspend fun findUserForLogin(identifier: String): User? {
-        // ... (código existente)
         val id = identifier.toLongOrNull()
         if (id != null) {
             val userById = userDao.getUserById(id)
@@ -27,7 +31,6 @@ class UserRepository(private val userDao: UserDao) {
         userDao.insert(user)
     }
 
-    // 👇 FUNÇÃO NOVA ADICIONADA 👇
     suspend fun getUserById(id: Long): User? {
         return userDao.getUserById(id)
     }

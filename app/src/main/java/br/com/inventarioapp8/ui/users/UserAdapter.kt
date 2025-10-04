@@ -6,23 +6,28 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.inventarioapp8.data.local.entity.User
 import br.com.inventarioapp8.databinding.ItemUserBinding
 
-class UserAdapter(private val users: List<User>) : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
+class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
-    // 1. Cria a representação visual de um item (o ViewHolder)
+    // A lista agora é uma variável interna e começa vazia
+    private var userList = emptyList<User>()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding)
     }
 
-    // 2. Conecta os dados de um usuário específico à sua representação visual
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(users[position])
+        holder.bind(userList[position])
     }
 
-    // 3. Informa ao RecyclerView quantos itens existem na lista
-    override fun getItemCount() = users.size
+    override fun getItemCount() = userList.size
 
-    // Classe interna que representa a view de um único item da lista
+    // Função pública para atualizar a lista de usuários do adapter
+    fun submitList(users: List<User>) {
+        userList = users
+        notifyDataSetChanged() // Notifica o RecyclerView que os dados mudaram
+    }
+
     class UserViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(user: User) {
             binding.textViewUserId.text = "ID: ${user.id}"

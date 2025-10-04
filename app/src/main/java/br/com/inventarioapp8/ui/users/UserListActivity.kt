@@ -3,6 +3,7 @@ package br.com.inventarioapp8.ui.users
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import br.com.inventarioapp8.databinding.ActivityUserListBinding
 import br.com.inventarioapp8.ui.auth.RegistrationActivity
@@ -10,36 +11,53 @@ import br.com.inventarioapp8.ui.auth.RegistrationActivity
 class UserListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserListBinding
+    private val viewModel: UserListViewModel by viewModels() // Cria o ViewModel
+    private lateinit var adapter: UserAdapter // Declara o adapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserListBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Ativa a seta "voltar" na ActionBar
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "" // Opcional: remove o título da ActionBar
+        supportActionBar?.title = ""
 
         setupRecyclerView()
         setupListeners()
+        setupObservers() // Nova função
     }
 
-    // Captura o clique no botão "voltar" da ActionBar
+    // ... (onOptionsItemSelected e setupListeners continuam iguais)
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            finish() // Finaliza a tela atual, voltando para a anterior
+            finish()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerViewUsers.adapter = UserAdapter(emptyList())
+        // Inicializa o adapter e o define no RecyclerView
+        adapter = UserAdapter()
+        binding.recyclerViewUsers.adapter = adapter
     }
 
     private fun setupListeners() {
         binding.fabAddUser.setOnClickListener {
             startActivity(Intent(this, RegistrationActivity::class.java))
+        }
+    }
+
+    // 👇 NOVA FUNÇÃO PARA OBSERVAR OS DADOS 👇
+    private fun setupObservers() {
+        // Observa a lista de usuários do ViewModel
+        viewModel.allUsers.observe(this) { users ->
+            // Quando a lista de usuários muda, atualiza o adapter
+            // O 'let' garante que o código só rode se 'users' não for nulo
+            users?.let {
+                adapter.submitList(it)
+            }
         }
     }
 }
