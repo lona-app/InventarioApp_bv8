@@ -11,8 +11,18 @@ import br.com.inventarioapp8.ui.auth.RegistrationActivity
 class UserListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityUserListBinding
-    private val viewModel: UserListViewModel by viewModels() // Cria o ViewModel
-    private lateinit var adapter: UserAdapter // Declara o adapter
+    private val viewModel: UserListViewModel by viewModels()
+
+    // O adapter é inicializado aqui, passando a função de clique
+    private val adapter: UserAdapter by lazy {
+        UserAdapter { user ->
+            // O que fazer quando um usuário for clicado:
+            // Abrir a UserDetailsActivity, passando o ID do usuário clicado
+            val intent = Intent(this, UserDetailsActivity::class.java)
+            intent.putExtra("USER_ID", user.id)
+            startActivity(intent)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +34,7 @@ class UserListActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupListeners()
-        setupObservers() // Nova função
+        setupObservers()
     }
 
     // ... (onOptionsItemSelected e setupListeners continuam iguais)
@@ -38,8 +48,6 @@ class UserListActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        // Inicializa o adapter e o define no RecyclerView
-        adapter = UserAdapter()
         binding.recyclerViewUsers.adapter = adapter
     }
 
@@ -49,12 +57,8 @@ class UserListActivity : AppCompatActivity() {
         }
     }
 
-    // 👇 NOVA FUNÇÃO PARA OBSERVAR OS DADOS 👇
     private fun setupObservers() {
-        // Observa a lista de usuários do ViewModel
         viewModel.allUsers.observe(this) { users ->
-            // Quando a lista de usuários muda, atualiza o adapter
-            // O 'let' garante que o código só rode se 'users' não for nulo
             users?.let {
                 adapter.submitList(it)
             }

@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".InventarioApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -34,6 +35,10 @@
         <activity
             android:name=".ui.users.UserListActivity"
             android:parentActivityName=".ui.dashboard.DashboardActivity" />
+
+        <activity
+            android:name=".ui.users.UserDetailsActivity"
+            android:parentActivityName=".ui.users.UserListActivity" />
 
     </application>
 </manifest>
