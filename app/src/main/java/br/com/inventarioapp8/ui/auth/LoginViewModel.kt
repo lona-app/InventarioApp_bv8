@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import br.com.inventarioapp8.data.local.AppDatabase
-import br.com.inventarioapp8.data.local.entity.User
+import br.com.inventarioapp8.data.local.entity.User // Import necessário
 import br.com.inventarioapp8.data.repository.UserRepository
 import kotlinx.coroutines.launch
 
@@ -18,7 +18,7 @@ data class LoginState(
 
 enum class LoginResult {
     SUCCESS,
-    FORCE_PASSWORD_CHANGE, // <-- NOVO ESTADO
+    FORCE_PASSWORD_CHANGE,
     INVALID_CREDENTIALS,
     ERROR
 }
@@ -41,16 +41,13 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 val user = repository.findUserForLogin(identifier)
 
                 if (user != null && user.passwordHash == password && user.isActive) {
-                    // Login Válido. Agora, verificamos a senha.
                     if (password == "user123") {
-                        // Senha padrão, força a troca
                         _loginState.postValue(LoginState(LoginResult.FORCE_PASSWORD_CHANGE, user))
                     } else {
-                        // Senha normal, sucesso
+                        // 👇 AGORA PASSAMOS O OBJETO 'user' NO SUCESSO 👇
                         _loginState.postValue(LoginState(LoginResult.SUCCESS, user))
                     }
                 } else {
-                    // Credenciais inválidas
                     _loginState.postValue(LoginState(LoginResult.INVALID_CREDENTIALS))
                 }
             } catch (e: Exception) {

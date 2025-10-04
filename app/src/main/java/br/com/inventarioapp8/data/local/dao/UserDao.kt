@@ -10,12 +10,12 @@ import br.com.inventarioapp8.data.local.entity.User
 
 @Dao
 interface UserDao {
-    // ... (outras queries)
 
-    // 👇 QUERY NOVA ADICIONADA 👇
-    @Query("SELECT * FROM users ORDER BY name ASC")
+    // 👇 QUERY MODIFICADA PARA EXCLUIR O ID 1000 👇
+    @Query("SELECT * FROM users WHERE id != 1000 ORDER BY name ASC")
     fun getAllUsers(): LiveData<List<User>>
 
+    // O resto das queries continua igual...
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun getUserById(id: Long): User?
 
