@@ -6,13 +6,13 @@ import java.util.Date
 
 @Entity(tableName = "users")
 data class User(
-    @PrimaryKey(autoGenerate = false) // Desativado para podermos definir o ID do Admin
+    @PrimaryKey(autoGenerate = false)
     var id: Long,
-    val name: String,
-    val username: String,
+    var name: String,
+    var username: String,
     var passwordHash: String,
-    val profile: Profile,
-    val isActive: Boolean,
+    var profile: Profile,
+    var isActive: Boolean,
     val creationDate: Date,
     var inactivationDate: Date?
 )
