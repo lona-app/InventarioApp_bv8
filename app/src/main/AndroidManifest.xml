@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:allowBackup="true"
         android:name=".InventarioApplication"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -39,6 +39,10 @@
         <activity
             android:name=".ui.users.UserDetailsActivity"
             android:parentActivityName=".ui.users.UserListActivity" />
+
+        <activity
+            android:name=".ui.inventory.InventoryListActivity"
+            android:parentActivityName=".ui.dashboard.DashboardActivity" />
 
     </application>
 </manifest>

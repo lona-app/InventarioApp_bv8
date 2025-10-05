@@ -9,6 +9,7 @@ import br.com.inventarioapp8.core.SessionManager
 import br.com.inventarioapp8.data.local.entity.Profile
 import br.com.inventarioapp8.databinding.ActivityDashboardBinding
 import br.com.inventarioapp8.ui.auth.LoginActivity
+import br.com.inventarioapp8.ui.inventory.InventoryListActivity // IMPORT NOVO
 import br.com.inventarioapp8.ui.users.UserListActivity
 
 class DashboardActivity : AppCompatActivity() {
@@ -26,13 +27,11 @@ class DashboardActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         setupListeners()
-        setupPermissions() // <-- NOVA FUNÇÃO
+        setupPermissions()
     }
 
     private fun setupPermissions() {
         val userProfile = sessionManager.getUserProfile()
-
-        // Se o perfil for USUARIO, esconde o botão
         if (userProfile == Profile.USUARIO) {
             binding.buttonUsers.visibility = View.GONE
         } else {
@@ -41,8 +40,10 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        // 👇 MUDANÇA AQUI 👇
         binding.buttonInventories.setOnClickListener {
-            showToast("Módulo de Inventários em breve!")
+            // Agora abre a tela de lista de inventários
+            startActivity(Intent(this, InventoryListActivity::class.java))
         }
 
         binding.buttonUsers.setOnClickListener {
@@ -50,17 +51,11 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         binding.buttonLogout.setOnClickListener {
-            // 👇 LIMPA A SESSÃO ANTES DE FAZER LOGOUT 👇
             sessionManager.clearSession()
-
             val intent = Intent(this, LoginActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             startActivity(intent)
         }
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
