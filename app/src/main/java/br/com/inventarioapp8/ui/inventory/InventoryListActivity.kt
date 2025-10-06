@@ -1,5 +1,6 @@
 package br.com.inventarioapp8.ui.inventory
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -33,19 +34,16 @@ class InventoryListActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         adapter = InventoryAdapter { inventory ->
-            // Ação de clique em um item da lista (futuramente abrirá os detalhes)
             Toast.makeText(this, "Inventário clicado: ${inventory.name}", Toast.LENGTH_SHORT).show()
         }
         binding.recyclerViewInventories.adapter = adapter
-
-        // Por enquanto, a lista estará vazia
-        // adapter.submitList(listaVindaDoViewModel)
     }
 
     private fun setupListeners() {
+        // 👇 MUDANÇA AQUI 👇
         binding.fabAddInventory.setOnClickListener {
-            // Ação de clique no botão '+' (futuramente abrirá a tela de cadastro)
-            Toast.makeText(this, "Adicionar novo inventário em breve!", Toast.LENGTH_SHORT).show()
+            // Agora abre a tela de cadastro de inventário
+            startActivity(Intent(this, AddInventoryActivity::class.java))
         }
     }
 }

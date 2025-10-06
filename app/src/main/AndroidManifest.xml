@@ -44,5 +44,9 @@
             android:name=".ui.inventory.InventoryListActivity"
             android:parentActivityName=".ui.dashboard.DashboardActivity" />
 
+        <activity
+            android:name=".ui.inventory.AddInventoryActivity"
+            android:parentActivityName=".ui.inventory.InventoryListActivity" />
+
     </application>
 </manifest>
