@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp") // 1. GARANTA QUE ESTA LINHA EXISTE
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -35,7 +35,6 @@ android {
     }
 }
 
-// 2. CRIE ESTA VARIÁVEL PARA CENTRALIZAR A VERSÃO DO ROOM
 val room_version = "2.6.1"
 
 dependencies {
@@ -45,12 +44,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation("androidx.activity:activity-ktx:1.9.0")
-
-    // --- 3. NOVAS DEPENDÊNCIAS PARA O ROOM ---
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
