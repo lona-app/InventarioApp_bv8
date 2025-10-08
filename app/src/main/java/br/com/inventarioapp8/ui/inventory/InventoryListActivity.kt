@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import br.com.inventarioapp8.databinding.ActivityInventoryListBinding
 
 class InventoryListActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityInventoryListBinding
+    private val viewModel: InventoryListViewModel by viewModels()
     private lateinit var adapter: InventoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +24,7 @@ class InventoryListActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupListeners()
+        setupObservers() // Nova função
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -40,10 +43,17 @@ class InventoryListActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // 👇 MUDANÇA AQUI 👇
         binding.fabAddInventory.setOnClickListener {
-            // Agora abre a tela de cadastro de inventário
             startActivity(Intent(this, AddInventoryActivity::class.java))
+        }
+    }
+
+    // 👇 NOVA FUNÇÃO PARA OBSERVAR OS DADOS 👇
+    private fun setupObservers() {
+        viewModel.allInventories.observe(this) { inventories ->
+            inventories?.let {
+                adapter.submitList(it)
+            }
         }
     }
 }
